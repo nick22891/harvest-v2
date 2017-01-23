@@ -280,15 +280,15 @@ exports.searchFarmers = function(req, res, next) {
     });
 
     var parameters = Common.getParameters(req.query, sequelize, next);
-    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info'}];
+    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info', where : {
+        $or: [{
+            First_Name: req.query.searchQuery},
+            {Last_Name: req.query.searchQuery,
+        }]
+    }}];
     var rowCounter = 0;//this will count the rows returned for logging purposes
 
     parameters.where = {
-        $or: [{
-            First_Name: {like: '%' + req.searchQuery + '%'},
-            Last_Name: {like: '%' + req.searchQuery + '%'},
-            IDX_Stakeholder: {like: '%' + req.searchQuery + '%'}
-            }]
         };
 
     Farmer.findAll(parameters).then(function(farmers) {
