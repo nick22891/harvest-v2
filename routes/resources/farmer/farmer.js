@@ -202,6 +202,10 @@ var FarmerPersonal = sequelize.define('std_reg_farmer_personal_table', {
         type: Sequelize.STRING,
         field: 'Photo_Path'
     },
+    Photo_Found_YN: {
+        type: Sequelize.STRING,
+        field: 'Photo_Found_YN'
+    },
     Interviewer: {
         type: Sequelize.STRING,
         field: 'Interviewer'
