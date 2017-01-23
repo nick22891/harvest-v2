@@ -273,6 +273,34 @@ exports.getAllFarmers = function(req, res, next) {
     });
 };
 
+exports.searchFarmers = function(req, res, next) {
+    var fakeblock = new Fakeblock({
+        acl: farmersAcl,
+        userRole: req.user.ap_app_role.ro_role_name
+    });
+
+    var parameters = Common.getParameters(req.query, sequelize, next);
+    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info'}];
+    var rowCounter = 0;//this will count the rows returned for logging purposes
+
+    parameters.where = {
+        $or: [{
+            First_Name: {like: '%' + req.searchQuery + '%'},
+            Last_Name: {like: '%' + req.searchQuery + '%'},
+            IDX_Stakeholder: {like: '%' + req.searchQuery + '%'}
+            }]
+        };
+
+    Farmer.findAll(parameters).then(function(farmers) {
+        for (var i = 0;i<farmers.length;i++) {
+            farmers[i] = fakeblock.applyAcl(farmers[i], 'get');
+            rowCounter++;
+        }
+        req.log_id = logging.accessLogger(req.user,req.url,logging.LOG_LEVEL_APP_ACTIVITY,rowCounter + " farmer records were returned for this request.",true);
+        res.send(farmers);
+    });
+};
+
 exports.getFarmerByID = function(req, res, next) {
     var fakeblock = new Fakeblock({
         acl: farmersAcl,

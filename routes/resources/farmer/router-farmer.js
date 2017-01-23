@@ -10,6 +10,7 @@ var router = express.Router();
  * End Points relevant to Farmers
  */
 router.get('/farmers', Farmer.getAllFarmers);
+router.get('/farmers/search', Farmer.searchFarmers);
 router.get('/farmer/:id', Farmer.getFarmerByID);
 
 module.exports = router;
