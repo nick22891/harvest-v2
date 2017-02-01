@@ -323,6 +323,7 @@ exports.searchFarmers = function(req, res, next) {
             First_Name: req.query.searchQuery},
             {Last_Name: req.query.searchQuery
         },{Alias: req.query.searchQuery
+            },{Stakeholder_Num: req.query.searchQuery
             }]
     }}
     ];
