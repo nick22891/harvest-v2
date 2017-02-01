@@ -322,7 +322,8 @@ exports.searchFarmers = function(req, res, next) {
         $or: [{
             First_Name: req.query.searchQuery},
             {Last_Name: req.query.searchQuery
-        }]
+        },{Alias: req.query.searchQuery
+            }]
     }}
     ];
     var rowCounter = 0;//this will count the rows returned for logging purposes
