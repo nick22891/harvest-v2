@@ -318,12 +318,11 @@ exports.searchFarmers = function(req, res, next) {
 
     var parameters = Common.getParameters(req.query, sequelize, next);
     parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info',
-        include: [{model: Receipt_Book, as : 'Receipt_Book', where : {range1: {$lte : req.query.searchQuery}, range2: {$gte : req.query.searchQuery} }}], where : {
+        include: [{model: Receipt_Book, as : 'Receipt_Book'}], where : {
         $or: [{
             First_Name: req.query.searchQuery},
             {Last_Name: req.query.searchQuery
         },{Alias: req.query.searchQuery
-            },{Stakeholder_Num: req.query.searchQuery
             }]
     }}
     ];
