@@ -323,8 +323,7 @@ exports.searchFarmers = function(req, res, next) {
             First_Name: req.query.searchQuery},
             {Last_Name: req.query.searchQuery
         }]
-    }},
-        { model: Receipt_Book, as:'Receipt_Book'}
+    }}
     ];
     var rowCounter = 0;//this will count the rows returned for logging purposes
 
