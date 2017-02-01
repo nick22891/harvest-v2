@@ -106,11 +106,11 @@ var Farmer = sequelize.define('std_reg_farmer_profile_table', {
 
 var FarmerPersonal = sequelize.define('std_reg_farmer_personal_table', {
     IDX_Stakeholder: {
-        primaryKey: true,
         type: Sequelize.STRING,
         field: 'IDX_Stakeholder'
     },
     Stakeholder_Num: {
+        primaryKey: true,
         type: Sequelize.STRING,
         field: 'Stakeholder_Num'
     },
@@ -251,7 +251,44 @@ var FarmerPersonal = sequelize.define('std_reg_farmer_personal_table', {
     freezeTableName: true // Model tableName will be the same as the model name
 });
 
+var Receipt_Book = sequelize.define('Jas_Books', {
+        IDX_Stakeholder: {
+            type: Sequelize.STRING,
+            field: 'IDX_Stakeholder'
+        },
+        IDX_JAS_Books: {
+            primaryKey: true,
+            type: Sequelize.STRING,
+            field: 'IDX_JAS_Books'
+        },
+        Book_Sequence_No: {
+            type: Sequelize.STRING,
+            field: 'Book_Sequence_No'
+        },
+        Receipt_No: {
+            type: Sequelize.STRING,
+            field: 'Receipt_No'
+        },
+        Date_Purchased: {
+            type: Sequelize.STRING,
+            field: 'Date_Purchased'
+        },
+        range1: {
+            type: Sequelize.STRING,
+            field: 'range1'
+        },
+        range2: {
+            type: Sequelize.STRING,
+            field: 'range2'
+        }
+    },{
+    timestamps: false,
+    freezeTableName: true // Model tableName will be the same as the model name
+});
+
 Farmer.hasOne(FarmerPersonal, {foreignKey : 'IDX_Stakeholder', targetKey: 'IDX_Stakeholder', as : 'Farmer_Personal_Info'});
+
+FarmerPersonal.hasMany(Receipt_Book, {foreignKey : 'IDX_Stakeholder', targetKey: 'IDX_Stakeholder', as : 'Receipt_Book'});
 
 exports.getAllFarmers = function(req, res, next) {
     var fakeblock = new Fakeblock({
@@ -260,7 +297,7 @@ exports.getAllFarmers = function(req, res, next) {
     });
 
     var parameters = Common.getParameters(req.query, sequelize, next);
-    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info'}];
+    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info', include: [{model: Receipt_Book, as : 'Receipt_Book'}]}];
     var rowCounter = 0;//this will count the rows returned for logging purposes
 
     Farmer.findAll(parameters).then(function(farmers) {
@@ -280,12 +317,15 @@ exports.searchFarmers = function(req, res, next) {
     });
 
     var parameters = Common.getParameters(req.query, sequelize, next);
-    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info', where : {
+    parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info',
+        include: [{model: Receipt_Book, as : 'Receipt_Book'}], where : {
         $or: [{
             First_Name: req.query.searchQuery},
             {Last_Name: req.query.searchQuery
         }]
-    }}];
+    }},
+        { model: Receipt_Book, as:'Receipt_Book'}
+    ];
     var rowCounter = 0;//this will count the rows returned for logging purposes
 
     parameters.where = {
