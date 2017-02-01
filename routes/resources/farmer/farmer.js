@@ -283,7 +283,7 @@ exports.searchFarmers = function(req, res, next) {
     parameters.include = [{ model: FarmerPersonal, as:'Farmer_Personal_Info', where : {
         $or: [{
             First_Name: req.query.searchQuery},
-            {Last_Name: req.query.searchQuery,
+            {Last_Name: req.query.searchQuery
         }]
     }}];
     var rowCounter = 0;//this will count the rows returned for logging purposes
